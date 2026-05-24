@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scanner | エンタメ解禁ニュース特化型SIGNAL</title>
+    <meta name="description" content="今日出たエンタメ解禁ニュースを時系列と解禁スコアで確認するScanner。" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <p class="eyebrow">Entertainment Release News</p>
+          <h1>Scanner</h1>
+        </div>
+      </div>
+      <div class="status-pill" id="connectionStatus">未接続</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">本日解禁ネタ捕捉</p>
+          <h2>朝のドラマ解禁から特報公開まで、記事掲載時刻で追う。</h2>
+          <p>
+            RSSを機械的に統合し、解禁ワードと掲載日時を軸に新ドラマ・主演・キャスト・映画化・アニメ化を優先表示します。
+          </p>
+        </div>
+        <div class="hero-stats" aria-label="集計">
+          <div>
+            <span id="statToday">0</span>
+            <small>Today</small>
+          </div>
+          <div>
+            <span id="statBreaking">0</span>
+            <small>Release</small>
+          </div>
+          <div>
+            <span id="statFeeds">0</span>
+            <small>Feeds</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="フィルター">
+        <label class="search">
+          <span>検索</span>
+          <input id="searchInput" type="search" placeholder="作品名、俳優名、媒体名、解禁ワード" />
+        </label>
+        <div class="filters">
+          <button class="chip active" data-filter="today">今日のみ</button>
+          <button class="chip" data-filter="hours48">48時間</button>
+          <button class="chip" data-filter="tvPriority">テレビ優先</button>
+          <button class="chip" data-filter="releaseOnly">解禁ワードあり</button>
+        </div>
+        <div class="selects">
+          <label>
+            媒体
+            <select id="sourceFilter">
+              <option value="">すべて</option>
+            </select>
+          </label>
+          <label>
+            カテゴリ
+            <select id="categoryFilter">
+              <option value="">すべて</option>
+            </select>
+          </label>
+          <label>
+            時系列
+            <select id="sortOrder">
+              <option value="desc">新しい順</option>
+              <option value="asc">古い順</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="meta-row">
+        <div>更新: <strong id="updatedAt">-</strong></div>
+        <div>表示: <strong id="visibleCount">0</strong>件</div>
+        <button id="refreshButton" class="text-button">再取得</button>
+      </section>
+
+      <nav class="tabs" aria-label="表示タブ">
+        <button class="tab active" data-tab="priority">解禁ニュース優先</button>
+        <button class="tab" data-tab="timeline">時系列</button>
+        <button class="tab" data-tab="drama">テレビ・ドラマ</button>
+        <button class="tab" data-tab="movieAnime">映画・アニメ</button>
+        <button class="tab" data-tab="low">低優先/除外候補</button>
+      </nav>
+
+      <section id="emptyState" class="empty hidden">
+        <h2>API URLを設定してください</h2>
+        <p><code>scanner/config.js</code> の <code>API_URL</code> と <code>DIAG_URL</code> をCloudflare WorkerのURLに変更すると表示されます。</p>
+      </section>
+
+      <section id="cards" class="cards" aria-live="polite"></section>
+
+      <section class="diag">
+        <div class="section-title">
+          <h2>媒体別取得ステータス</h2>
+          <button id="toggleDiag" class="text-button">表示切替</button>
+        </div>
+        <div id="diagList" class="diag-grid"></div>
+      </section>
+    </main>
+
+    <template id="cardTemplate">
+      <article class="news-card">
+        <div class="card-topline">
+          <span class="category"></span>
+          <span class="published"></span>
+        </div>
+        <h3></h3>
+        <p class="summary"></p>
+        <div class="keywords"></div>
+        <div class="card-footer">
+          <div>
+            <strong class="score"></strong>
+            <span class="source"></span>
+          </div>
+          <a class="open-link" target="_blank" rel="noopener">記事を開く</a>
+        </div>
+        <details class="source-details">
+          <summary>媒体一覧</summary>
+          <ul></ul>
+        </details>
+      </article>
+    </template>
+
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
